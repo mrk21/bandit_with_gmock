@@ -5,8 +5,6 @@ This library is for using [GoogleMock](https://code.google.com/p/googlemock "Goo
 
 ## Examples
 
-### Basic Example
-
 ```c++
 #include <bandit_with_gmock/bandit_with_gmock.hpp>
 
@@ -47,63 +45,6 @@ go_bandit([]{
       hoge.func();
     });
   });
-});
-
-int main(int argc, char * argv[]) {
-  return bandit_with_gmock::run(argc, argv);
-}
-```
-
-### Mocking Dependencies
-
-```c++
-#include <bandit_with_gmock/bandit_with_gmock.hpp>
-
-class DependencyInterface {
-public:
-    virtual void dependencyMethod() = 0;
-};
-
-class DependencyClass: public DependencyInterface {
-public:
-    void dependencyMethod() {
-        // real method
-    }
-};
-
-class MockDependencyClass : public DependencyInterface {
-public:
-    MOCK_METHOD0(dependencyMethod, void());
-};
-
-class SomeClass {
-private:
-    DependencyInterface * dependency;
-public:
-    SomeClass(DependencyInterface *);
-    
-    void runMethodOnDependency();
-};
-
-SomeClass::SomeClass(DependencyInterface * dependency) {
-    this->dependency = dependency;
-}
-
-void SomeClass::runMethodOnDependency() {
-    dependency->dependencyMethod();
-}
-
-go_bandit([](){
-    using namespace bandit;
-
-    describe("mock dependency injection", []() {
-        it("should work", []() {
-            testing::StrictMock<MockDependencyClass> dependency;
-            SomeClass * someClass = new SomeClass(&dependency);
-            EXPECT_CALL(dependency, dependencyMethod()).Times(1);
-            someClass->runMethodOnDependency();
-        });
-    });
 });
 
 int main(int argc, char * argv[]) {
