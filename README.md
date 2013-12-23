@@ -59,9 +59,6 @@ int main(int argc, char * argv[]) {
 ```c++
 #include <bandit_with_gmock/bandit_with_gmock.hpp>
 
-using namespace bandit;
-using namespace testing;
-
 class DependencyInterface {
 public:
     virtual void dependencyMethod() = 0;
@@ -80,9 +77,10 @@ public:
 };
 
 class SomeClass {
+private:
+    DependencyInterface * dependency;
 public:
     SomeClass(DependencyInterface *);
-    DependencyInterface * dependency;
     
     void runMethodOnDependency();
 };
@@ -96,14 +94,13 @@ void SomeClass::runMethodOnDependency() {
 }
 
 go_bandit([](){
+    using namespace bandit;
+
     describe("mock dependency injection", []() {
-        it("should work", [&]() {
+        it("should work", []() {
             testing::StrictMock<MockDependencyClass> dependency;
-            
             SomeClass * someClass = new SomeClass(&dependency);
-            
             EXPECT_CALL(dependency, dependencyMethod()).Times(1);
-            
             someClass->runMethodOnDependency();
         });
     });
