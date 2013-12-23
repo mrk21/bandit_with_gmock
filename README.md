@@ -5,6 +5,8 @@ This library is for using [GoogleMock](https://code.google.com/p/googlemock "Goo
 
 ## Examples
 
+### Basic Example
+
 ```c++
 #include <bandit_with_gmock/bandit_with_gmock.hpp>
 
@@ -52,10 +54,70 @@ int main(int argc, char * argv[]) {
 }
 ```
 
+### Mocking Dependencies
+
+```c++
+#include <bandit_with_gmock/bandit_with_gmock.hpp>
+
+using namespace bandit;
+using namespace testing;
+
+class DependencyInterface {
+public:
+    virtual void dependencyMethod() = 0;
+};
+
+class DependencyClass: public DependencyInterface {
+public:
+    void dependencyMethod() {
+        // real method
+    }
+};
+
+class MockDependencyClass : public DependencyInterface {
+public:
+    MOCK_METHOD0(dependencyMethod, void());
+};
+
+class SomeClass {
+public:
+    SomeClass(DependencyInterface *);
+    DependencyInterface * dependency;
+    
+    void runMethodOnDependency();
+};
+
+SomeClass::SomeClass(DependencyInterface * dependency) {
+    this->dependency = dependency;
+}
+
+void SomeClass::runMethodOnDependency() {
+    dependency->dependencyMethod();
+}
+
+go_bandit([](){
+    describe("mock dependency injection", []() {
+        it("should work", [&]() {
+            testing::StrictMock<MockDependencyClass> dependency;
+            
+            SomeClass * someClass = new SomeClass(&dependency);
+            
+            EXPECT_CALL(dependency, dependencyMethod()).Times(1);
+            
+            someClass->runMethodOnDependency();
+        });
+    });
+});
+
+int main(int argc, char * argv[]) {
+  return bandit_with_gmock::run(argc, argv);
+}
+```
+
 ## Dependencies
 
-* [GoogleMock](https://code.google.com/p/googlemock "GoogleMock") (ver. 1.6.0)
-* [Bandit](https://github.com/joakimkarlsson/bandit "Bandit") (ver. 1.0.0)
+* [GoogleMock](https://code.google.com/p/googlemock "GoogleMock") (ver. 1.7.0)
+* [Bandit](https://github.com/joakimkarlsson/bandit "Bandit") (ver. 1.1.4)
 
 
 ## Compiler options
@@ -81,3 +143,7 @@ int main(int argc, char * argv[]) {
 ## Command line options
 
 Can use GoogleMock and Bandit options.
+
+## Other stuff
+
+* [BDD gmock Aliases](https://github.com/andystanton/gmock-bdd-aliases).
