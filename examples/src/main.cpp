@@ -1,11 +1,3 @@
-bandit_with_gmock
-=================
-
-This library is for using [GoogleMock](https://code.google.com/p/googlemock "GoogleMock") by [Bandit](https://github.com/joakimkarlsson/bandit "Bandit"). 
-
-## Examples
-
-```c++
 #include <bandit_with_gmock/bandit_with_gmock.hpp>
 
 class hoge {
@@ -69,38 +61,3 @@ go_bandit([]{
 int main(int argc, char * argv[]) {
   return bandit_with_gmock::run(argc, argv);
 }
-```
-
-## Dependencies
-
-* [GoogleMock](https://code.google.com/p/googlemock "GoogleMock") (ver. 1.7.0)
-* [Bandit](https://github.com/joakimkarlsson/bandit "Bandit") (ver. 1.1.4)
-
-
-## Compiler options
-
-### Include path
-
-* -I path/to/googlemock/include
-* -I path/to/googlemock/gtest/include
-* -I path/to/bandit
-* -I path/to/bandit_with_gmock
-
-### Library path
-
-* -L path/to/googlemock
-* -L path/to/googlemock/gtest
-
-### Library
-
-* -lgmock
-* -lgtest
-* -lpthread
-
-## Command line options
-
-Can use GoogleMock and Bandit options.
-
-## Other stuff
-
-* [BDD gmock Aliases](https://github.com/andystanton/gmock-bdd-aliases).
