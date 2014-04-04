@@ -70,7 +70,7 @@ namespace bandit_with_gmock {
     }
   };
   
-  int run(int argc, char * argv[]) {
+  inline int run(int argc, char * argv[]) {
     bandit::detail::options opt(argc, argv);
     bandit::detail::failure_formatter_ptr formatter(bandit::detail::create_formatter(opt));
     bandit::detail::colorizer colorizer(!opt.no_color());
