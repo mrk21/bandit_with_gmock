@@ -13,10 +13,10 @@ namespace bandit_with_gmock {
   class listener_adapter: public testing::EmptyTestEventListener, public bandit::detail::listener {
   protected:
     bandit::detail::listener * base;
-    bool is_failed;
+    bandit::detail::assertion_exception * exception{nullptr};
     
   public:
-    listener_adapter(bandit::detail::listener * base) : base(base), is_failed(false) {}
+    listener_adapter(bandit::detail::listener * base) : base(base) {}
     
     virtual void test_run_starting(void) {
       this->base->test_run_starting();
@@ -39,11 +39,15 @@ namespace bandit_with_gmock {
     }
     
     virtual void it_starting(const char * desc) {
-      this->is_failed = false;
+      if (this->exception != nullptr) {
+        delete this->exception;
+        this->exception = nullptr;
+      }
       this->base->it_starting(desc);
     }
     
     virtual void it_succeeded(const char * desc) {
+      if (this->exception != nullptr) throw *this->exception;
       this->base->it_succeeded(desc);
     }
     
@@ -64,9 +68,8 @@ namespace bandit_with_gmock {
     }
     
     virtual void OnTestPartResult(const testing::TestPartResult & result) {
-      if (!result.failed() || this->is_failed) return;
-      this->is_failed = true;
-      throw bandit::detail::assertion_exception(result.summary(), result.file_name(), result.line_number());
+      if (!result.failed() || this->exception != nullptr) return;
+      this->exception = new bandit::detail::assertion_exception(result.summary(), result.file_name(), result.line_number());
     }
   };
   
