@@ -1,7 +1,12 @@
 cmake_minimum_required(VERSION 2.8)
 project(bandit_with_gmock)
 
-set(CMAKE_CXX_FLAGS "-std=gnu++11 -stdlib=libc++ -Wall -Wextra")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  set(CMAKE_CXX_FLAGS "-std=gnu++11 -stdlib=libc++ -Wall -Wextra")
+else()
+  set(CMAKE_CXX_FLAGS "-std=gnu++11 -Wall -Wextra")
+endif()
+
 set(LIBS pthread gtest gmock)
 
 include_directories(${PROJECT_SOURCE_DIR})
