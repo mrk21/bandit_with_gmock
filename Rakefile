@@ -32,5 +32,8 @@ end
 
 desc 'Distclean'
 task :distclean do
+  Dir.chdir('vendor') do
+    sh "rake clean"
+  end
   FileUtils.rm_rf 'gen'
 end

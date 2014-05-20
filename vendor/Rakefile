@@ -1,3 +1,5 @@
+require 'fileutils'
+
 BANDIT_VERSION = 'v1.1.4'
 GOOGLEMOCK_VERSION = '1.7.0'
 
@@ -13,6 +15,11 @@ task :product => PRODUCT
 
 desc 'Install the package which required to the development.'
 task :develop => ALL
+
+desc 'Clean'
+task :clean do
+  FileUtils.rm_rf 'googlemock'
+end
 
 
 directory 'bandit' do |t|
