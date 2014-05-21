@@ -18,6 +18,19 @@ namespace bandit_with_gmock {
     public:
         listener_adapter(bandit::detail::listener * base) : base(base) {}
         
+        bool is_faild_mock() const {
+            return this->exception != nullptr;
+        }
+        
+        void clear_mock_error() {
+            if (this->exception != nullptr) {
+                delete this->exception;
+                this->exception = nullptr;
+            }
+        }
+        
+        
+        // bandit listener APIs
         virtual void test_run_starting(void) {
             this->base->test_run_starting();
         }
@@ -39,10 +52,7 @@ namespace bandit_with_gmock {
         }
         
         virtual void it_starting(const char * desc) {
-            if (this->exception != nullptr) {
-                delete this->exception;
-                this->exception = nullptr;
-            }
+            this->clear_mock_error();
             this->base->it_starting(desc);
         }
         
@@ -67,11 +77,17 @@ namespace bandit_with_gmock {
             return this->base->did_we_pass();
         }
         
+        
+        // GoogleTest listener APIs
         virtual void OnTestPartResult(const testing::TestPartResult & result) {
             if (!result.failed() || this->exception != nullptr) return;
             this->exception = new bandit::detail::assertion_exception(result.summary(), result.file_name(), result.line_number());
         }
     };
+    
+    inline listener_adapter & listener() {
+        return static_cast<listener_adapter &>(bandit::detail::registered_listener());
+    }
     
     inline int run(int argc, char * argv[]) {
         bandit::detail::options opt(argc, argv);

@@ -2,7 +2,22 @@ require 'fileutils'
 
 directory 'gen'
 
-task :default => :examples
+task :default => :test
+
+desc 'Run test'
+task :test => 'gen' do
+  Dir.chdir('vendor') do
+    sh "rake develop"
+  end
+  
+  Dir.chdir('gen') do
+    sh "cmake -D IS_EXAMPLES=false .."
+    sh "make"
+    Dir.chdir('test') do
+      sh "./spec --reporter=spec"
+    end
+  end
+end
 
 desc 'Build examples'
 task :examples => 'gen' do
@@ -11,7 +26,7 @@ task :examples => 'gen' do
   end
   
   Dir.chdir('gen') do
-    sh "cmake .."
+    sh "cmake -D IS_EXAMPLES=true .."
     sh "make"
   end
 end
