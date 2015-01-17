@@ -4,7 +4,7 @@ namespace bandit_with_gmock {
 go_bandit([]{
     using namespace bandit;
     
-    describe("listener_adapter", [&]{
+    describe("bandit_with_gmock::listener_adapter", [&]{
         describe("#is_faild_mock()", [&]{
             describe("When it was successful in assertion of the mock", [&]{
                 it("should be false", [&]{
