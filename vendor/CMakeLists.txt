@@ -4,9 +4,15 @@ include(ExternalProject)
 
 set(vendor_cmake_path ${PROJECT_BINARY_DIR}/cmake/vendor.cmake)
 file(WRITE ${vendor_cmake_path} "
-  unset(vendor_include_dirs)
+  set(vendor_include_dirs
+    $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>
+  )
   unset(vendor_libraries)
 ")
+
+if(NOT BUILD_DEPENDENCY)
+  return()
+endif()
 
 # Google Mock
 ExternalProject_Add(google_mock
@@ -19,8 +25,8 @@ ExternalProject_Get_Property(google_mock SOURCE_DIR)
 
 file(APPEND ${vendor_cmake_path} "
   list(APPEND vendor_include_dirs
-    ${SOURCE_DIR}/include
-    ${SOURCE_DIR}/gtest/include
+    $<BUILD_INTERFACE:${SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${SOURCE_DIR}/gtest/include>
   )
   link_directories(
     ${BINARY_DIR}
@@ -44,6 +50,8 @@ execute_process(COMMAND git submodule init   bandit WORKING_DIRECTORY ${PROJECT_
 execute_process(COMMAND git submodule update bandit WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
 file(APPEND ${vendor_cmake_path} "
-  list(APPEND vendor_include_dirs ${PROJECT_SOURCE_DIR}/bandit)
+  list(APPEND vendor_include_dirs
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/bandit>
+  )
   install(DIRECTORY ${PROJECT_SOURCE_DIR}/bandit/bandit DESTINATION include)
 ")

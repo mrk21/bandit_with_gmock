@@ -1,11 +1,19 @@
 cmake_minimum_required(VERSION 2.8)
 project(bandit_with_gmock)
 
+option(BUILD_DEPENDENCY "Whether to build the dependencies" OFF)
+option(BUILD_TEST "Whether to build the tests" OFF)
+option(BUILD_EXAMPLE "Whether to build the examples" OFF)
+
 message("Building vendor...")
 try_compile(vendor_status
   ${PROJECT_BINARY_DIR}/vendor
   ${PROJECT_SOURCE_DIR}/vendor
   vendor
+  CMAKE_FLAGS
+    -DBUILD_DEPENDENCY=${BUILD_DEPENDENCY}
+    -DBUILD_TEST=${BUILD_TEST}
+    -DBUILD_EXAMPLE=${BUILD_EXAMPLE}
   OUTPUT_VARIABLE vendor_result
 )
 if(NOT vendor_status)
@@ -22,10 +30,7 @@ else()
   set(CMAKE_CXX_FLAGS "-std=gnu++11 -Wall -Wextra")
 endif()
 
-set(LIBS ${vendor_libraries})
-include_directories(${PROJECT_SOURCE_DIR})
-include_directories(${vendor_include_dirs})
-
 enable_testing()
-add_subdirectory(examples)
+add_subdirectory(bandit_with_gmock)
 add_subdirectory(test)
+add_subdirectory(examples)

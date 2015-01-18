@@ -1,10 +1,14 @@
+if(NOT BUILD_TEST)
+  return()
+endif()
+
 file(GLOB_RECURSE specs *_spec.cpp)
 
 add_executable(spec_runner
   spec_runner.cpp
   ${specs}
 )
-target_link_libraries(spec_runner ${LIBS})
+target_link_libraries(spec_runner bandit_with_gmock)
 
 add_custom_target(spec
   COMMAND $<TARGET_FILE:spec_runner> --reporter=spec

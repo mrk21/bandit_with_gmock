@@ -4,10 +4,14 @@ cmake_minimum_required(VERSION 3.0.2)
 set(build_dir ${CMAKE_CURRENT_LIST_DIR}/gen)
 cmake_host_system_information(RESULT core_size QUERY NUMBER_OF_LOGICAL_CORES)
 
-if(NOT EXISTS ${build_dir})
+if(NOT EXISTS build_dir)
   file(MAKE_DIRECTORY ${build_dir})
   execute_process(
-    COMMAND ${CMAKE_COMMAND} ${CMAKE_CURRENT_LIST_DIR}
+    COMMAND ${CMAKE_COMMAND} 
+      -DBUILD_DEPENDENCY=ON
+      -DBUILD_TEST=ON
+      -DBUILD_EXAMPLE=ON
+      ${CMAKE_CURRENT_LIST_DIR}
     WORKING_DIRECTORY ${build_dir}
     RESULT_VARIABLE result
   )
