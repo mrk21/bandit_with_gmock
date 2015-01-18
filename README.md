@@ -76,26 +76,100 @@ int main(int argc, char * argv[]) {
 * [GoogleMock](https://code.google.com/p/googlemock "GoogleMock") (ver. 1.7.0)
 * [Bandit](https://github.com/joakimkarlsson/bandit "Bandit") (ver. 1.1.4)
 
+## Installation
 
-## Compiler options
+This library is header-only, so you don't need to build. You should do the steps listed below to install:
 
-### Include path
+### Manual Installation
+
+You should set with the compile options listed below to install manually:
+
+#### Include path
 
 * -I path/to/googlemock/include
 * -I path/to/googlemock/gtest/include
 * -I path/to/bandit
-* -I path/to/bandit_with_gmock
+* -I path/to/bandit\_with\_gmock
 
-### Library path
+#### Library path
 
 * -L path/to/googlemock
 * -L path/to/googlemock/gtest
 
-### Library
+#### Library
 
 * -lgmock
 * -lgtest
-* -lpthread
+
+### Using CMake
+
+If you used CMake, the compile options will be set automatically by writing the content listed below to your project's CMake scripts:
+
+First, you write the content as shown below to the CMake script `CMakeLists.txt` of root directory:
+
+```cmake
+cmake_minimum_required(VERSION 3.0.2)
+
+message("Building external...")
+try_compile(external_status
+  ${PROJECT_BINARY_DIR}/external
+  ${PROJECT_SOURCE_DIR}/external
+  external
+  OUTPUT_VARIABLE external_result
+)
+if(NOT external_status)
+  message("${external_result}")
+endif()
+message("Built external")
+include(${PROJECT_BINARY_DIR}/external/bandit_with_gmock/lib/cmake/bandit_with_gmock.cmake)
+
+link_directories(${PROJECT_BINARY_DIR}/external/bandit_with_gmock/lib)
+
+add_compile_options(-std=c++11)
+add_executable(test test.cpp)
+target_link_libraries(test bandit_with_gmock::core)
+```
+
+Next, you create `external` directory, and write the content shown below to CMake script `CMakeLists.txt`:
+
+```cmake
+cmake_minimum_required(VERSION 3.0.2)
+
+include(ExternalProject)
+
+ExternalProject_Add(bandit_with_gmock
+  GIT_REPOSITORY https://github.com/mrk21/bandit_with_gmock.git
+  GIT_TAG v1.2.0
+  PREFIX bandit_with_gmock
+  CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+    -DBUILD_DEPENDENCY=ON
+)
+```
+
+In addition, if you specified `bandit_with_gmock::main` instead of `bandit_with_gmock::core` to `target_link_libraries()` command, you will not need to write the main function to your test code `test.cpp`. In this case, you should specify `-DBUILD_LIBRARY` CMake option.
+
+`CMakeLists.txt`:
+
+```cmake
+...
+target_link_libraries(test bandit_with_gmock::main)
+```
+
+`external/CMakeLists.txt`:
+
+```cmake
+...
+ExternalProject_Add(bandit_with_gmock
+  GIT_REPOSITORY https://github.com/mrk21/bandit_with_gmock.git
+  GIT_TAG v1.2.0
+  PREFIX bandit_with_gmock
+  CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+    -DBUILD_DEPENDENCY=ON
+    -DBUILD_LIBRARY=ON
+)
+```
 
 ## Command line options
 
