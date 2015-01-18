@@ -12,6 +12,7 @@ if(NOT EXISTS build_dir)
       -DBUILD_LIBRARY=ON
       -DBUILD_TEST=ON
       -DBUILD_EXAMPLE=ON
+      -DCMAKE_INSTALL_PREFIX=${build_dir}/install
       ${CMAKE_CURRENT_LIST_DIR}
     WORKING_DIRECTORY ${build_dir}
     RESULT_VARIABLE result

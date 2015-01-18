@@ -1,10 +1,17 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0.2)
 project(bandit_with_gmock)
 
 option(BUILD_DEPENDENCY "Whether to build the dependencies" OFF)
 option(BUILD_LIBRARY "Whether to build the libraries" OFF)
 option(BUILD_TEST "Whether to build the tests" OFF)
 option(BUILD_EXAMPLE "Whether to build the examples" OFF)
+option(BUILD_SHAERD "Whether to build the shared libraries" ON)
+
+if(BUILD_SHAERD)
+  set(library_type SHARED)
+else()
+  set(library_type STATIC)
+endif()
 
 message("Building vendor...")
 try_compile(vendor_status
@@ -16,6 +23,7 @@ try_compile(vendor_status
     -DBUILD_LIBRARY=${BUILD_LIBRARY}
     -DBUILD_TEST=${BUILD_TEST}
     -DBUILD_EXAMPLE=${BUILD_EXAMPLE}
+    -DBUILD_SHAERD=${BUILD_SHAERD}
   OUTPUT_VARIABLE vendor_result
 )
 if(NOT vendor_status)
