@@ -10,7 +10,7 @@ file(WRITE ${vendor_cmake_path} "
   unset(vendor_libraries)
 ")
 
-if(NOT BUILD_DEPENDENCY)
+if(NOT BUILD_DEPENDENCY AND NOT BUILD_LIBRARY)
   return()
 endif()
 

@@ -1,4 +1,5 @@
 add_library(bandit_with_gmock INTERFACE)
+add_library(bandit_with_gmock::core ALIAS bandit_with_gmock)
 
 target_include_directories(bandit_with_gmock INTERFACE
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
@@ -7,6 +8,7 @@ target_include_directories(bandit_with_gmock INTERFACE
 target_link_libraries(bandit_with_gmock INTERFACE
   ${vendor_libraries}
 )
+set_target_properties(bandit_with_gmock PROPERTIES EXPORT_NAME core)
 
 install(TARGETS bandit_with_gmock
   DESTINATION lib

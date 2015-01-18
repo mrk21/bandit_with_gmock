@@ -8,7 +8,7 @@ add_executable(spec_runner
   spec_runner.cpp
   ${specs}
 )
-target_link_libraries(spec_runner bandit_with_gmock)
+target_link_libraries(spec_runner bandit_with_gmock::core)
 
 add_custom_target(spec
   COMMAND $<TARGET_FILE:spec_runner> --reporter=spec

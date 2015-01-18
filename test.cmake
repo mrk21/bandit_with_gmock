@@ -9,6 +9,7 @@ if(NOT EXISTS build_dir)
   execute_process(
     COMMAND ${CMAKE_COMMAND} 
       -DBUILD_DEPENDENCY=ON
+      -DBUILD_LIBRARY=ON
       -DBUILD_TEST=ON
       -DBUILD_EXAMPLE=ON
       ${CMAKE_CURRENT_LIST_DIR}

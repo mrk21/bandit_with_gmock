@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(bandit_with_gmock)
 
 option(BUILD_DEPENDENCY "Whether to build the dependencies" OFF)
+option(BUILD_LIBRARY "Whether to build the libraries" OFF)
 option(BUILD_TEST "Whether to build the tests" OFF)
 option(BUILD_EXAMPLE "Whether to build the examples" OFF)
 
@@ -12,6 +13,7 @@ try_compile(vendor_status
   vendor
   CMAKE_FLAGS
     -DBUILD_DEPENDENCY=${BUILD_DEPENDENCY}
+    -DBUILD_LIBRARY=${BUILD_LIBRARY}
     -DBUILD_TEST=${BUILD_TEST}
     -DBUILD_EXAMPLE=${BUILD_EXAMPLE}
   OUTPUT_VARIABLE vendor_result
@@ -32,5 +34,6 @@ endif()
 
 enable_testing()
 add_subdirectory(bandit_with_gmock)
+add_subdirectory(lib)
 add_subdirectory(test)
 add_subdirectory(examples)
